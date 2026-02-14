@@ -1,0 +1,196 @@
+/* PREVENT BLUE SELECTION & IMAGE DRAGGING GLOBALLY */
+* { 
+  margin: 0; padding: 0; box-sizing: border-box; 
+  -webkit-user-select: none; -ms-user-select: none; user-select: none; 
+}
+
+/* Define local font if available, fallback to Google Font */
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('fonts/myfont.woff2') format('woff2'),
+       url('fonts/myfont.woff') format('woff');
+  font-weight: normal; font-style: normal;
+}
+
+input, select, textarea { 
+  -webkit-user-select: auto; -ms-user-select: auto; user-select: auto; 
+}
+img { 
+  -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none; 
+}
+
+body { 
+  overflow: hidden; background: #000; cursor: grab; 
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif; 
+}
+
+.viewport { width: 100vw; height: 100vh; overflow: hidden; position: relative; }
+
+/* OPTIMIZED CANVAS */
+#canvas { 
+  position: absolute; top: 0; left: 0; transform-origin: 0 0; 
+  will-change: transform; /* Hardware Acceleration for low-end laptops */
+}
+
+/* =========================================
+   ENHANCED GLASS NAV BAR
+========================================= */
+.glass-nav {
+  position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+  width: 96%; max-width: 1300px; 
+  z-index: 4000; 
+  background: rgba(15, 15, 15, 0.45); 
+  backdrop-filter: blur(35px) saturate(200%);
+  -webkit-backdrop-filter: blur(35px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+  border-radius: 24px; padding: 12px 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.nav-content { display: flex; justify-content: space-between; align-items: center; color: rgb(255, 255, 255); }
+.brand { font-weight: 800; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.nav-controls { display: flex; gap: 12px; align-items: center; }
+
+.nav-btn {
+  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white; padding: 8px 18px; border-radius: 14px; cursor: pointer; 
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+  font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500;
+}
+.nav-btn:hover { 
+  background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); 
+  transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   CUSTOM APPLE-STYLE DROPDOWN
+========================================= */
+.custom-dropdown { position: relative; font-family: 'Outfit', sans-serif; }
+
+.dropdown-header {
+  background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px; padding: 8px 18px; color: white; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 15px;
+  font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease;
+  min-width: 140px;
+}
+.dropdown-header:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.3); }
+.dropdown-header .arrow { font-size: 0.6rem; opacity: 0.6; transition: transform 0.3s ease; }
+.custom-dropdown.open .arrow { transform: rotate(180deg); }
+
+.dropdown-list {
+  position: absolute; top: calc(100% + 12px); right: 0;
+  background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 18px;
+  width: 220px; max-height: 400px; overflow-y: auto; list-style: none; padding: 10px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  opacity: 0; visibility: hidden; transform: translateY(-15px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+  z-index: 4100; 
+  pointer-events: auto;
+}
+.custom-dropdown.open .dropdown-list { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+
+.dropdown-list li {
+  padding: 10px 15px; color: rgba(255, 255, 255, 0.8); border-radius: 10px;
+  cursor: pointer; font-size: 0.95rem; font-weight: 400; transition: all 0.2s ease;
+}
+.dropdown-list li:hover { background: rgba(255, 255, 255, 0.15); color: white; padding-left: 20px; }
+
+.dropdown-list::-webkit-scrollbar { width: 5px; }
+.dropdown-list::-webkit-scrollbar-track { background: transparent; margin: 10px 0; }
+.dropdown-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+.dropdown-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+/* =========================================
+   INFO BOX & POSTERS
+========================================= */
+.info-container-wrapper { position: fixed; bottom: 30px; right: 30px; display: flex; align-items: flex-end; gap: 15px; z-index: 2000; pointer-events: none; }
+
+.liquid-glass-info { 
+  pointer-events: auto; width: 350px; max-height: 65vh; padding: 25px; 
+  background: rgba(15, 15, 15, 0.5); backdrop-filter: blur(40px) saturate(200%); 
+  -webkit-backdrop-filter: blur(40px) saturate(200%); 
+  border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; color: white; opacity: 0; 
+  transform: translateX(30px); transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); 
+  display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+}
+
+.liquid-glass-info.active { opacity: 1; transform: translateX(0); }
+.liquid-glass-info.locked { border: 1px solid rgba(255, 204, 0, 0.5); box-shadow: 0 0 40px rgba(255,204,0,0.15); }
+#info-title { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; margin-bottom: 5px; }
+
+.info-meta { display: flex; gap: 10px; margin: 8px 0; align-items: center; font-size: 0.85rem; font-weight: 500; }
+.badge { background: rgba(255,255,255,0.15); padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+#info-rating { color: #ffcc00; font-weight: 700; }
+.info-extra { font-size: 0.8rem; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
+.info-extra strong { opacity: 0.6; font-weight: 500; }
+
+.info-desc-container { 
+  overflow-y: auto; flex-grow: 1; padding-right: 5px; padding-bottom: 30px; margin-bottom: -10px; 
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%); 
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%); 
+}
+
+#info-desc { font-size: 0.9rem; line-height: 1.6; opacity: 0.8; font-weight: 300; }
+.info-desc-container::-webkit-scrollbar { width: 3px; }
+.info-desc-container::-webkit-scrollbar-track { background: transparent; }
+.info-desc-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+.info-desc-container:hover::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+
+#focus-indicator { font-size: 0.7rem; text-align: center; margin-top: 15px; opacity: 0.4; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+.poster { position: absolute; background-color: #1a1a1a; border-radius: 0px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease; cursor: pointer; border: 1px solid rgba(255,255,255,0.03); }
+.poster:hover { transform: scale(1.08) translateY(-8px); z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
+.poster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* OPTICALLY CENTERED POSTER ADD BUTTON */
+.poster-add-btn { 
+  position: absolute; bottom: 12px; right: 12px; width: 32px; height: 32px; 
+  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); 
+  border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 50%; 
+  color: white; font-weight: 500; font-size: 20px;
+  display: flex; align-items: center; justify-content: center; 
+  padding: 0; padding-bottom: 2px; line-height: 0; /* Centering Fix */
+  cursor: pointer; z-index: 10; opacity: 0; transform: scale(0.5); pointer-events: none; 
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.poster-add-btn.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+.poster-add-btn.added { background: #2ecc71; border-color: transparent; color: white; font-size: 16px; padding-bottom: 0; }
+
+/* =========================================
+   PREMIUM WATCHLIST UI REDESIGN
+========================================= */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(30px) saturate(150%); -webkit-backdrop-filter: blur(30px) saturate(150%); z-index: 5000; display: none; padding: 60px; overflow-y: auto; }
+.modal-content { max-width: 1300px; margin: 0 auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+.modal-header h2 { font-size: 2.5rem; font-weight: 700; letter-spacing: 1px; }
+.close-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 18px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+.close-btn:hover { background: rgba(255,50,50,0.9); border-color: transparent; transform: scale(1.1); }
+.watchlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 35px; }
+
+.wl-item { position: relative; background: #0a0a0a; border-radius: 0px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 20px rgba(0,0,0,0.4); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, opacity 0.3s ease; display: flex; flex-direction: column; overflow: hidden; }
+.wl-item:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.8); border-color: rgba(255,255,255,0.2); }
+
+/* Animation class for smooth deletion */
+.wl-item.removing {
+  transform: scale(0.7) translateY(20px) !important;
+  filter: blur(12px) opacity(0);
+  transition: all 0.2s cubic-bezier(0.4, 0, 1, 1) !important;
+  pointer-events: none;
+}
+
+.wl-img-wrapper { width: 100%; aspect-ratio: 2/3; position: relative; }
+.wl-img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.wl-info { padding: 15px; text-align: center; color: white; background: linear-gradient(to top, #0a0a0a 60%, transparent 100%); position: absolute; bottom: 0; width: 100%; }
+.wl-title { font-weight: 600; font-size: 0.95rem; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.remove-btn { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); color: white; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding-bottom: 2px; line-height: 0; opacity: 0; transform: scale(0.8); transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.wl-item:hover .remove-btn { opacity: 1; transform: scale(1); }
+.remove-btn:hover { background: rgba(255,50,50,0.9); border-color: transparent; transform: scale(1.15); color: white;}
+
+.modal-overlay::-webkit-scrollbar { width: 8px; }
+.modal-overlay::-webkit-scrollbar-track { background: transparent; margin: 20px 0; }
+.modal-overlay::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+.modal-overlay::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); border: 2px solid transparent; background-clip: padding-box; }

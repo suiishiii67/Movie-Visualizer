@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movieverse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="viewport">
+  <nav class="glass-nav">
+    <div class="nav-content">
+      <div class="brand">MOVIEVERSE</div>
+      <div class="nav-controls">
+        <button class="nav-btn" onclick="setFilter('recent')">Recently Released</button>
+        <button class="nav-btn" onclick="setFilter('liked')">Most Liked (All Time)</button>
+        <button class="nav-btn" onclick="setFilter('recent_liked')">New & Liked</button>
+        
+        <div class="custom-dropdown" id="custom-genre-dropdown">
+          <div class="dropdown-header">
+            <span>All Genres</span>
+            <span class="arrow">▼</span>
+          </div>
+          <ul class="dropdown-list">
+            <li data-value="">All Genres</li>
+            <li data-value="28">Action</li>
+            <li data-value="12">Adventure</li>
+            <li data-value="16">Animation</li>
+            <li data-value="35">Comedy</li>
+            <li data-value="80">Crime</li>
+            <li data-value="99">Documentary</li>
+            <li data-value="18">Drama</li>
+            <li data-value="10751">Family</li>
+            <li data-value="14">Fantasy</li>
+            <li data-value="36">History</li>
+            <li data-value="27">Horror</li>
+            <li data-value="10402">Music</li>
+            <li data-value="9648">Mystery</li>
+            <li data-value="10749">Romance</li>
+            <li data-value="878">Science Fiction</li>
+            <li data-value="10770">TV Movie</li>
+            <li data-value="53">Thriller</li>
+            <li data-value="10752">War</li>
+          </ul>
+        </div>
+
+        <button class="nav-btn watchlist-trigger" onclick="toggleWatchlist()">Watchlist (<span id="wl-count">0</span>)</button>
+      </div>
+    </div>
+  </nav>
+
+  <div id="watchlist-modal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>My Watchlist</h2>
+        <button class="close-btn" onclick="toggleWatchlist()">✕</button>
+      </div>
+      <div id="watchlist-grid" class="watchlist-grid"></div>
+    </div>
+  </div>
+
+  <div class="info-container-wrapper">
+    <div id="global-info-box" class="liquid-glass-info">
+      <h2 id="info-title"></h2>
+      <div class="info-meta">
+        <span id="info-year"></span>
+        <span id="info-cert" class="badge"></span>
+        <span id="info-rating"></span>
+      </div>
+      <div class="info-extra">
+        <div id="info-genres"></div>
+        <div id="info-cast"></div>
+        <div id="info-director"></div>
+        <div id="info-runtime"></div>
+      </div>
+      <div class="info-desc-container" id="info-scroll-box">
+        <p id="info-desc"></p>
+      </div>
+      <div id="focus-indicator">Double-Click to Lock & Add</div>
+    </div>
+  </div>
+
+  <div id="canvas"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
